@@ -138,7 +138,7 @@ namespace QRCoder
                 if (minVersion > version)
                 {
                     var maxSizeByte = capacityTable[version - 1].Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
-                    throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encoding.ToString(), version, maxSizeByte);
+                    throw new Exceptions.DataTooLongException(eccLevel.ToString(), encoding.ToString(), version, maxSizeByte);
                 }                    
             }
 
@@ -427,11 +427,11 @@ namespace QRCoder
                     }
 
                     var formatStr = GetFormatString(eccLevel, pattern.Key - 1);
-                    ModulePlacer.PlaceFormat(ref qrTemp, formatStr);
+                    PlaceFormat(ref qrTemp, formatStr);
                     if (version >= 7)
                     {
                         var versionString = GetVersionString(version);
-                        ModulePlacer.PlaceVersion(ref qrTemp, versionString);
+                        PlaceVersion(ref qrTemp, versionString);
                     }
 
                     for (var x = 0; x < size; x++)
@@ -885,7 +885,7 @@ namespace QRCoder
                 x => x.Details.Any(
                     y => (y.ErrorCorrectionLevel == eccLevel))
                 ).Max(x => x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel).CapacityDict[encMode]);
-            throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
+            throw new Exceptions.DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
         }
 
         private static EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
@@ -1451,13 +1451,13 @@ namespace QRCoder
             public CodewordBlock(int groupNumber, int blockNumber, string bitString, List<string> codeWords,
                 List<string> eccWords, List<int> codeWordsInt, List<int> eccWordsInt)
             {
-                this.GroupNumber = groupNumber;
-                this.BlockNumber = blockNumber;
-                this.BitString = bitString;
-                this.CodeWords = codeWords;
-                this.ECCWords = eccWords;
-                this.CodeWordsInt = codeWordsInt;
-                this.ECCWordsInt = eccWordsInt;
+                GroupNumber = groupNumber;
+                BlockNumber = blockNumber;
+                BitString = bitString;
+                CodeWords = codeWords;
+                ECCWords = eccWords;
+                CodeWordsInt = codeWordsInt;
+                ECCWordsInt = eccWordsInt;
             }
 
             public int GroupNumber { get; }
@@ -1474,14 +1474,14 @@ namespace QRCoder
             public ECCInfo(int version, ECCLevel errorCorrectionLevel, int totalDataCodewords, int eccPerBlock, int blocksInGroup1,
                 int codewordsInGroup1, int blocksInGroup2, int codewordsInGroup2)
             {
-                this.Version = version;
-                this.ErrorCorrectionLevel = errorCorrectionLevel;
-                this.TotalDataCodewords = totalDataCodewords;
-                this.ECCPerBlock = eccPerBlock;
-                this.BlocksInGroup1 = blocksInGroup1;
-                this.CodewordsInGroup1 = codewordsInGroup1;
-                this.BlocksInGroup2 = blocksInGroup2;
-                this.CodewordsInGroup2 = codewordsInGroup2;
+                Version = version;
+                ErrorCorrectionLevel = errorCorrectionLevel;
+                TotalDataCodewords = totalDataCodewords;
+                ECCPerBlock = eccPerBlock;
+                BlocksInGroup1 = blocksInGroup1;
+                CodewordsInGroup1 = codewordsInGroup1;
+                BlocksInGroup2 = blocksInGroup2;
+                CodewordsInGroup2 = codewordsInGroup2;
             }
             public int Version { get; }
             public ECCLevel ErrorCorrectionLevel { get; }
@@ -1497,8 +1497,8 @@ namespace QRCoder
         {
             public VersionInfo(int version, List<VersionInfoDetails> versionInfoDetails)
             {
-                this.Version = version;
-                this.Details = versionInfoDetails;
+                Version = version;
+                Details = versionInfoDetails;
             }
             public int Version { get; }
             public List<VersionInfoDetails> Details { get; }
@@ -1508,8 +1508,8 @@ namespace QRCoder
         {
             public VersionInfoDetails(ECCLevel errorCorrectionLevel, Dictionary<EncodingMode, int> capacityDict)
             {
-                this.ErrorCorrectionLevel = errorCorrectionLevel;
-                this.CapacityDict = capacityDict;
+                ErrorCorrectionLevel = errorCorrectionLevel;
+                CapacityDict = capacityDict;
             }
 
             public ECCLevel ErrorCorrectionLevel { get; }
@@ -1520,8 +1520,8 @@ namespace QRCoder
         {
             public Antilog(int exponentAlpha, int integerValue)
             {
-                this.ExponentAlpha = exponentAlpha;
-                this.IntegerValue = integerValue;
+                ExponentAlpha = exponentAlpha;
+                IntegerValue = integerValue;
             }
             public int ExponentAlpha { get; }
             public int IntegerValue { get; }
@@ -1531,8 +1531,8 @@ namespace QRCoder
         {
             public PolynomItem(int coefficient, int exponent)
             {
-                this.Coefficient = coefficient;
-                this.Exponent = exponent;
+                Coefficient = coefficient;
+                Exponent = exponent;
             }
 
             public int Coefficient { get; }
@@ -1543,7 +1543,7 @@ namespace QRCoder
         {
             public Polynom()
             {
-                this.PolyItems = new List<PolynomItem>();
+                PolyItems = new List<PolynomItem>();
             }
 
             public List<PolynomItem> PolyItems { get; set; }
@@ -1552,7 +1552,7 @@ namespace QRCoder
             {
                 var sb = new StringBuilder();
                 //this.PolyItems.ForEach(x => sb.Append("a^" + x.Coefficient + "*x^" + x.Exponent + " + "));
-                foreach (var polyItem in this.PolyItems)
+                foreach (var polyItem in PolyItems)
                 {
                     sb.Append("a^" + polyItem.Coefficient + "*x^" + polyItem.Exponent + " + ");
                 }
@@ -1567,8 +1567,8 @@ namespace QRCoder
             public int Y { get; }
             public Point(int x, int y)
             {
-                this.X = x;
-                this.Y = y;
+                X = x;
+                Y = y;
             }
         }
 
@@ -1581,10 +1581,10 @@ namespace QRCoder
 
             public Rectangle(int x, int y, int w, int h)
             {
-                this.X = x;
-                this.Y = y;
-                this.Width = w;
-                this.Height = h;
+                X = x;
+                Y = y;
+                Width = w;
+                Height = h;
             }
         }
 
